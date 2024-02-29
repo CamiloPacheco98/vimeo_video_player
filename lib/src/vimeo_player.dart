@@ -39,6 +39,8 @@ class VimeoVideoPlayer extends StatefulWidget {
   /// Used in vimeo video public API call to get the video config
   final Options? dioOptionsForVimeoVideoConfig;
 
+  final void Function(VideoPlayerController controller)? onReadyController;
+
   const VimeoVideoPlayer({
     required this.url,
     this.systemUiOverlay = const [
@@ -56,6 +58,7 @@ class VimeoVideoPlayer extends StatefulWidget {
     this.onFinished,
     this.autoPlay = false,
     this.dioOptionsForVimeoVideoConfig,
+    this.onReadyController,
     super.key,
   });
 
@@ -187,6 +190,8 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
           VideoPlayerController.networkUrl(Uri.parse(vimeoMp4Video));
       _setVideoInitialPosition();
       _setVideoListeners();
+
+      widget.onReadyController?.call(_videoPlayerController!);
 
       _flickManager = FlickManager(
         videoPlayerController:
