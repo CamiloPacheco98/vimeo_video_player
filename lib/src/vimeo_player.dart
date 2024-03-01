@@ -39,7 +39,7 @@ class VimeoVideoPlayer extends StatefulWidget {
   /// Used in vimeo video public API call to get the video config
   final Options? dioOptionsForVimeoVideoConfig;
 
-  final void Function(VideoPlayerController controller)? onReadyController;
+  final void Function(VideoPlayerController? controller)? onReadyController;
 
   const VimeoVideoPlayer({
     required this.url,
@@ -115,8 +115,8 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
     /// disposing the controllers
     _flickManager = null;
     _flickManager?.dispose();
-    _videoPlayerController = null;
     _videoPlayerController?.dispose();
+    _videoPlayerController = null;
     _emptyVideoPlayerController.dispose();
     isVimeoVideoLoaded.dispose();
     SystemChrome.setEnabledSystemUIMode(
