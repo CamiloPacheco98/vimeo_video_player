@@ -109,6 +109,17 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
   }
 
   @override
+  void didUpdateWidget(covariant VimeoVideoPlayer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.url != widget.url) {
+      if (_isVimeoVideo) {
+        isVimeoVideoLoaded.value = false;
+        _videoPlayer();
+      }
+    }
+  }
+
+  @override
   void deactivate() {
     _videoPlayerController?.pause();
     super.deactivate();
