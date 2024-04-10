@@ -88,6 +88,8 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
 
   /// used to check that the url format is valid vimeo video format
   bool get _isVimeoVideo {
+    // ignore: avoid_print
+    print("(vimeo player) checking if the url: ${widget.url} is a vimeo url");
     var regExp = RegExp(
       r"^((https?)://)?(www.)?vimeo\.com/(\d+).*$",
       caseSensitive: false,
@@ -108,6 +110,9 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
     /// checking that vimeo url is valid or not
     if (_isVimeoVideo) {
       _videoPlayer();
+    } else {
+      // ignore: avoid_print
+      print("(vimeo player) is not a vimeo url");
     }
   }
 
@@ -213,6 +218,8 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
   }
 
   void _playWithUrl(String url) {
+    // ignore: avoid_print
+    print("(vimeo player) play video with url: $url");
     _videoPlayerController = VimeoPlayerController.networkUrl(Uri.parse(url));
     _setVideoInitialPosition();
     _setVideoListeners();
