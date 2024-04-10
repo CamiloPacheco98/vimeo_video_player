@@ -44,6 +44,8 @@ class VimeoVideoPlayer extends StatefulWidget {
 
   final VoidCallback? onNoSourceFound;
 
+  final bool skipVimeoConfigFetch;
+
   const VimeoVideoPlayer({
     required this.url,
     this.systemUiOverlay = const [
@@ -63,6 +65,7 @@ class VimeoVideoPlayer extends StatefulWidget {
     this.dioOptionsForVimeoVideoConfig,
     this.onReadyController,
     this.onNoSourceFound,
+    this.skipVimeoConfigFetch = false,
     super.key,
   });
 
@@ -181,6 +184,11 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
   }
 
   void _videoPlayer() {
+    if (widget.skipVimeoConfigFetch) {
+      _playWithUrl(widget.url);
+      return;
+    }
+
     /// getting the vimeo video configuration from api and setting managers
     _getVimeoVideoConfigFromUrl(widget.url).then((value) async {
       final progressiveList = value?.request?.files?.progressive ?? [];
@@ -200,23 +208,25 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
           // showAlertDialog(context);
         }
       }
-
-      _videoPlayerController =
-          VimeoPlayerController.networkUrl(Uri.parse(vimeoMp4Video));
-      _setVideoInitialPosition();
-      _setVideoListeners();
-
-      widget.onReadyController?.call(_videoPlayerController!);
-
-      _flickManager = FlickManager(
-        videoPlayerController:
-            _videoPlayerController ?? _emptyVideoPlayerController,
-        autoPlay: widget.autoPlay,
-        // ignore: use_build_context_synchronously
-      )..registerContext(context);
-
-      isVimeoVideoLoaded.value = !isVimeoVideoLoaded.value;
+      _playWithUrl(vimeoMp4Video);
     });
+  }
+
+  void _playWithUrl(String url) {
+    _videoPlayerController = VimeoPlayerController.networkUrl(Uri.parse(url));
+    _setVideoInitialPosition();
+    _setVideoListeners();
+
+    widget.onReadyController?.call(_videoPlayerController!);
+
+    _flickManager = FlickManager(
+      videoPlayerController:
+          _videoPlayerController ?? _emptyVideoPlayerController,
+      autoPlay: widget.autoPlay,
+      // ignore: use_build_context_synchronously
+    )..registerContext(context);
+
+    isVimeoVideoLoaded.value = !isVimeoVideoLoaded.value;
   }
 
   @override
