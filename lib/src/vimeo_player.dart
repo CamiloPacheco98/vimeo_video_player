@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 
 import 'model/vimeo_video_config.dart';
+import 'vimeo_player_controller.dart';
 
 class VimeoVideoPlayer extends StatefulWidget {
   /// vimeo video url
@@ -39,7 +40,7 @@ class VimeoVideoPlayer extends StatefulWidget {
   /// Used in vimeo video public API call to get the video config
   final Options? dioOptionsForVimeoVideoConfig;
 
-  final void Function(VideoPlayerController? controller)? onReadyController;
+  final void Function(VimeoPlayerController? controller)? onReadyController;
 
   const VimeoVideoPlayer({
     required this.url,
@@ -68,7 +69,7 @@ class VimeoVideoPlayer extends StatefulWidget {
 
 class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
   /// video player controller
-  VideoPlayerController? _videoPlayerController;
+  VimeoPlayerController? _videoPlayerController;
 
   final VideoPlayerController _emptyVideoPlayerController =
       VideoPlayerController.networkUrl(Uri.parse(''));
@@ -187,7 +188,7 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
       }
 
       _videoPlayerController =
-          VideoPlayerController.networkUrl(Uri.parse(vimeoMp4Video));
+          VimeoPlayerController.networkUrl(Uri.parse(vimeoMp4Video));
       _setVideoInitialPosition();
       _setVideoListeners();
 
