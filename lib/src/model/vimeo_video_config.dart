@@ -26,11 +26,12 @@ class VimeoFiles {
     }
 
     return VimeoFiles(
-      progressive: List<VimeoProgressive>.from(progressive),
+      progressive:
+          List<VimeoProgressive>.from(progressive.where((e) => e != null)),
     );
   }
 
-  List<VimeoProgressive?>? progressive;
+  List<VimeoProgressive>? progressive;
 }
 
 class VimeoProgressive {
@@ -71,4 +72,6 @@ class VimeoProgressive {
   dynamic id;
   dynamic origin;
   dynamic height;
+
+  bool get isValidUrl => url != null && url != null && url != '';
 }

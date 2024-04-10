@@ -42,6 +42,8 @@ class VimeoVideoPlayer extends StatefulWidget {
 
   final void Function(VimeoPlayerController? controller)? onReadyController;
 
+  final VoidCallback? onNoSourceFound;
+
   const VimeoVideoPlayer({
     required this.url,
     this.systemUiOverlay = const [
@@ -60,6 +62,7 @@ class VimeoVideoPlayer extends StatefulWidget {
     this.autoPlay = false,
     this.dioOptionsForVimeoVideoConfig,
     this.onReadyController,
+    this.onNoSourceFound,
     super.key,
   });
 
@@ -169,21 +172,21 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
   void _videoPlayer() {
     /// getting the vimeo video configuration from api and setting managers
     _getVimeoVideoConfigFromUrl(widget.url).then((value) async {
-      final progressiveList = value?.request?.files?.progressive;
+      final progressiveList = value?.request?.files?.progressive ?? [];
 
       var vimeoMp4Video = '';
 
-      if (progressiveList != null && progressiveList.isNotEmpty) {
+      if (progressiveList.isEmpty) {
+        widget.onNoSourceFound?.call();
+      } else {
         progressiveList.map((element) {
-          if (element != null &&
-              element.url != null &&
-              element.url != '' &&
-              vimeoMp4Video == '') {
+          if (element.isValidUrl && vimeoMp4Video == '') {
             vimeoMp4Video = element.url ?? '';
           }
         }).toList();
-        if (vimeoMp4Video.isEmpty || vimeoMp4Video == '') {
-          showAlertDialog(context);
+        if (vimeoMp4Video.isEmpty || vimeoMp4Video.trim().isEmpty) {
+          widget.onNoSourceFound?.call();
+          // showAlertDialog(context);
         }
       }
 
