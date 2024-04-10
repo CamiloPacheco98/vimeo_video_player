@@ -19,13 +19,16 @@ class VimeoRequest {
 class VimeoFiles {
   VimeoFiles({this.progressive});
 
-  factory VimeoFiles.fromJson(Map<String, dynamic> json) => VimeoFiles(
-        progressive: List<VimeoProgressive>.from(
-          json["progressive"].map(
-            (x) => VimeoProgressive.fromJson(x),
-          ),
-        ),
-      );
+  factory VimeoFiles.fromJson(Map<String, dynamic> json) {
+    var progressive = json["progressive"];
+    if (progressive is! List) {
+      progressive = [];
+    }
+
+    return VimeoFiles(
+      progressive: List<VimeoProgressive>.from(progressive),
+    );
+  }
 
   List<VimeoProgressive?>? progressive;
 }
