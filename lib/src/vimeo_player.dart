@@ -86,15 +86,17 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
   /// used to notify that video is loaded or not
   ValueNotifier<bool> isVimeoVideoLoaded = ValueNotifier(false);
 
+  final RegExp _vimeoRegExp = RegExp(
+    r'^(?:http|https)?:?/?/?(?:www\.)?(?:player\.)?vimeo\.com/(?:channels/(?:\w+/)?|groups/[^/]*/videos/|video/|)(\d+)(?:|/\?)?$',
+    caseSensitive: false,
+    multiLine: false,
+  );
+
   /// used to check that the url format is valid vimeo video format
   bool get _isVimeoVideo {
     // ignore: avoid_print
     print("(vimeo player) checking if the url: ${widget.url} is a vimeo url");
-    var regExp = RegExp(
-      r"^((https?)://)?(www.)?vimeo\.com/(\d+).*$",
-      caseSensitive: false,
-      multiLine: false,
-    );
+    var regExp = _vimeoRegExp;
     final match = regExp.firstMatch(widget.url);
     if (match != null && match.groupCount >= 1) return true;
     return false;
@@ -282,23 +284,7 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
   }) async {
     if (trimWhitespaces) url = url.trim();
 
-    /// here i'm converting the vimeo video id only and calling config api for vimeo video .mp4
-    /// supports this types of urls
-    /// https://vimeo.com/70591644 => 70591644
-    /// www.vimeo.com/70591644 => 70591644
-    /// vimeo.com/70591644 => 70591644
-    var vimeoVideoId = '';
-    var videoIdGroup = 4;
-    for (var exp in [
-      RegExp(r"^((https?)://)?(www.)?vimeo\.com/(\d+).*$"),
-    ]) {
-      RegExpMatch? match = exp.firstMatch(url);
-      if (match != null && match.groupCount >= 1) {
-        vimeoVideoId = match.group(videoIdGroup) ?? '';
-      }
-    }
-
-    final response = await _getVimeoVideoConfig(vimeoVideoId: vimeoVideoId);
+    final response = await _getVimeoVideoConfig(vimeoVideoId: _videoId);
     return (response != null) ? response : null;
   }
 
@@ -320,6 +306,11 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
       log('Error : ', name: e.toString());
       return null;
     }
+  }
+
+  String get _videoId {
+    RegExpMatch? match = _vimeoRegExp.firstMatch(widget.url);
+    return match?.group(1) ?? '';
   }
 }
 
