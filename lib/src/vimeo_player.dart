@@ -112,7 +112,8 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
     /// checking that vimeo url is valid or not
     if (_isVimeoVideo) {
       _videoPlayer();
-    } else {
+    } else if (widget.skipVimeoConfigFetch) {
+      _playWithUrl(widget.url);
       // ignore: avoid_print
       print("(vimeo player) is not a vimeo url");
     }
@@ -125,6 +126,8 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
       if (_isVimeoVideo) {
         isVimeoVideoLoaded.value = false;
         _videoPlayer();
+      } else if (widget.skipVimeoConfigFetch) {
+        _playWithUrl(widget.url);
       }
     }
   }
