@@ -123,11 +123,9 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
   void didUpdateWidget(covariant VimeoVideoPlayer oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.url != widget.url) {
-      if (_isVimeoVideo) {
+      if (_isVimeoVideo || widget.skipVimeoConfigFetch) {
         isVimeoVideoLoaded.value = false;
         _videoPlayer();
-      } else if (widget.skipVimeoConfigFetch) {
-        _playWithUrl(widget.url);
       }
     }
   }
