@@ -1,12 +1,9 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 
-import 'model/vimeo_video_config.dart';
 import 'vimeo_player_controller.dart';
 
 class VimeoVideoPlayer extends StatefulWidget {
@@ -44,8 +41,6 @@ class VimeoVideoPlayer extends StatefulWidget {
 
   final VoidCallback? onNoSourceFound;
 
-  final bool skipVimeoConfigFetch;
-
   const VimeoVideoPlayer({
     required this.url,
     this.systemUiOverlay = const [
@@ -65,7 +60,6 @@ class VimeoVideoPlayer extends StatefulWidget {
     this.dioOptionsForVimeoVideoConfig,
     this.onReadyController,
     this.onNoSourceFound,
-    this.skipVimeoConfigFetch = false,
     super.key,
   });
 
@@ -86,47 +80,21 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
   /// used to notify that video is loaded or not
   ValueNotifier<bool> isVimeoVideoLoaded = ValueNotifier(false);
 
-  final RegExp _vimeoRegExp = RegExp(
-    r'^(?:http|https)?:?/?/?(?:www\.)?(?:player\.)?vimeo\.com/(?:channels/(?:\w+/)?|groups/[^/]*/videos/|video/|)(\d+)(?:|/\?)?$',
-    caseSensitive: false,
-    multiLine: false,
-  );
-
-  /// used to check that the url format is valid vimeo video format
-  bool get _isVimeoVideo {
-    // ignore: avoid_print
-    print("(vimeo player) checking if the url: ${widget.url} is a vimeo url");
-    var regExp = _vimeoRegExp;
-    final match = regExp.firstMatch(widget.url);
-    if (match != null && match.groupCount >= 1) return true;
-    return false;
-  }
-
   /// used to check that the video is already seeked or not
   bool _isSeekedVideo = false;
 
   @override
   void initState() {
     super.initState();
-
-    /// checking that vimeo url is valid or not
-    if (_isVimeoVideo) {
-      _videoPlayer();
-    } else if (widget.skipVimeoConfigFetch) {
-      _playWithUrl(widget.url);
-      // ignore: avoid_print
-      print("(vimeo player) is not a vimeo url");
-    }
+    _videoPlayer();
   }
 
   @override
   void didUpdateWidget(covariant VimeoVideoPlayer oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.url != widget.url) {
-      if (_isVimeoVideo || widget.skipVimeoConfigFetch) {
-        isVimeoVideoLoaded.value = false;
-        _videoPlayer();
-      }
+      isVimeoVideoLoaded.value = false;
+      _videoPlayer();
     }
   }
 
@@ -192,35 +160,7 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
   }
 
   void _videoPlayer() {
-    if (widget.skipVimeoConfigFetch) {
-      _playWithUrl(widget.url);
-      return;
-    }
-
-    /// getting the vimeo video configuration from api and setting managers
-    _getVimeoVideoConfigFromUrl(widget.url).then((value) async {
-      final progressiveList = value?.request?.files?.progressive ?? [];
-
-      var vimeoMp4Video = '';
-
-      if (progressiveList.isEmpty) {
-        widget.onNoSourceFound?.call();
-      } else {
-        progressiveList.map((element) {
-          if (element.isValidUrl && vimeoMp4Video == '') {
-            vimeoMp4Video = element.url ?? '';
-          }
-        }).toList();
-        if (vimeoMp4Video.isEmpty || vimeoMp4Video.trim().isEmpty) {
-          widget.onNoSourceFound?.call();
-          // showAlertDialog(context);
-        }
-      }
-      _playWithUrl(vimeoMp4Video);
-    });
-  }
-
-  void _playWithUrl(String url) {
+    var url = widget.url;
     // ignore: avoid_print
     print("(vimeo player) play video with url: $url");
     _videoPlayerController = VimeoPlayerController.networkUrl(Uri.parse(url));
@@ -277,42 +217,6 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
         _videoPlayerController?.pause();
       },
     );
-  }
-
-  /// used to get valid vimeo video configuration
-  Future<VimeoVideoConfig?> _getVimeoVideoConfigFromUrl(
-    String url, {
-    bool trimWhitespaces = true,
-  }) async {
-    if (trimWhitespaces) url = url.trim();
-
-    final response = await _getVimeoVideoConfig(vimeoVideoId: _videoId);
-    return (response != null) ? response : null;
-  }
-
-  /// give vimeo video configuration from api
-  Future<VimeoVideoConfig?> _getVimeoVideoConfig({
-    required String vimeoVideoId,
-  }) async {
-    try {
-      Response responseData = await Dio().get(
-        'https://player.vimeo.com/video/$vimeoVideoId/config',
-        options: widget.dioOptionsForVimeoVideoConfig,
-      );
-      var vimeoVideo = VimeoVideoConfig.fromJson(responseData.data);
-      return vimeoVideo;
-    } on DioException catch (e) {
-      log('Dio Error : ', name: e.error.toString());
-      return null;
-    } on Exception catch (e) {
-      log('Error : ', name: e.toString());
-      return null;
-    }
-  }
-
-  String get _videoId {
-    RegExpMatch? match = _vimeoRegExp.firstMatch(widget.url);
-    return match?.group(1) ?? '';
   }
 }
 
