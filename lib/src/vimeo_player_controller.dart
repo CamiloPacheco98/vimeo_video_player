@@ -4,6 +4,8 @@ import 'package:video_player/video_player.dart';
 class VimeoPlayerController extends VideoPlayerController {
   VimeoPlayerController.networkUrl(super.url) : super.networkUrl();
 
+  VimeoPlayerController.file(super.file) : super.file();
+
   bool _mDisposed = false;
   FlickManager? _flickManager;
 

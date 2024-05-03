@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +10,8 @@ import 'vimeo_player_controller.dart';
 
 class VimeoVideoPlayer extends StatefulWidget {
   /// vimeo video url
-  final String url;
+  final String? url;
+  final File? file;
 
   /// hide/show device status-bar
   final List<SystemUiOverlay> systemUiOverlay;
@@ -42,7 +45,8 @@ class VimeoVideoPlayer extends StatefulWidget {
   final VoidCallback? onNoSourceFound;
 
   const VimeoVideoPlayer({
-    required this.url,
+    this.url,
+    this.file,
     this.systemUiOverlay = const [
       SystemUiOverlay.top,
       SystemUiOverlay.bottom,
@@ -85,6 +89,10 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
 
   @override
   void initState() {
+    if (widget.url == null && widget.file == null) {
+      throw "Invalid source. The url or file should not be null";
+    }
+
     super.initState();
     _videoPlayer();
   }
@@ -163,7 +171,9 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
     var url = widget.url;
     // ignore: avoid_print
     print("(vimeo player) play video with url: $url");
-    _videoPlayerController = VimeoPlayerController.networkUrl(Uri.parse(url));
+    _videoPlayerController = url != null
+        ? VimeoPlayerController.networkUrl(Uri.parse(url))
+        : VimeoPlayerController.file(widget.file!);
     _setVideoInitialPosition();
     _setVideoListeners();
 
