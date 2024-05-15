@@ -24,4 +24,20 @@ class VimeoPlayerController extends VideoPlayerController {
   }
 
   bool get isDispose => _mDisposed;
+
+  Future<void> exitFullScreen() async {
+    if (isFullscreen == true) {
+      _flickManager?.flickControlManager?.exitFullscreen();
+      await Future.delayed(const Duration(milliseconds: 125));
+    }
+  }
+
+  Future<void> enterFullscreen() async {
+    if (isFullscreen == false) {
+      _flickManager?.flickControlManager?.enterFullscreen();
+      await Future.delayed(const Duration(milliseconds: 125));
+    }
+  }
+
+  bool? get isFullscreen => _flickManager?.flickControlManager?.isFullscreen;
 }

@@ -36,6 +36,8 @@ class VimeoVideoPlayer extends StatefulWidget {
   /// to auto-play the video once initialized
   final bool autoPlay;
 
+  final bool exitFullScreenOnFinish;
+
   /// Options to pass in Dio GET request
   /// Used in vimeo video public API call to get the video config
   final Options? dioOptionsForVimeoVideoConfig;
@@ -65,6 +67,7 @@ class VimeoVideoPlayer extends StatefulWidget {
     this.onReadyController,
     this.onNoSourceFound,
     super.key,
+    this.exitFullScreenOnFinish = true,
   });
 
   @override
@@ -150,7 +153,7 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
 
     if (_videoPlayerController != null &&
         (onProgressCallback != null || onFinishCallback != null)) {
-      _videoPlayerController!.addListener(() {
+      _videoPlayerController!.addListener(() async {
         final VideoPlayerValue videoData = _videoPlayerController!.value;
         if (videoData.isInitialized) {
           if (videoData.isPlaying) {
@@ -158,6 +161,9 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
               onProgressCallback.call(videoData.position);
             }
           } else if (videoData.duration == videoData.position) {
+            if (widget.exitFullScreenOnFinish) {
+              await _videoPlayerController?.exitFullScreen();
+            }
             if (onFinishCallback != null) {
               onFinishCallback.call();
             }
