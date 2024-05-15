@@ -25,6 +25,8 @@ class VimeoPlayerController extends VideoPlayerController {
 
   bool get isDispose => _mDisposed;
 
+  bool? get isPlaying => _flickManager?.flickVideoManager?.isPlaying;
+
   Future<void> exitFullScreen() async {
     if (isFullscreen == true) {
       _flickManager?.flickControlManager?.exitFullscreen();

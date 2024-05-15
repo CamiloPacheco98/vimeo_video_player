@@ -103,10 +103,24 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
   @override
   void didUpdateWidget(covariant VimeoVideoPlayer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.url != widget.url) {
-      isVimeoVideoLoaded.value = false;
-      _videoPlayer();
+    if (widget.url == null && widget.file == null) {
+      throw "Invalid source. The url or file should not be null";
     }
+
+    if (oldWidget.url != widget.url) {
+      _onChangedVideoSource();
+    } else if (oldWidget.file != widget.file && widget.file != null) {
+      _onChangedVideoSource();
+    }
+  }
+
+  void _onChangedVideoSource() async {
+    if (_videoPlayerController?.isPlaying == true) {
+      await _videoPlayerController?.pause();
+      await _videoPlayerController?.dispose();
+    }
+    isVimeoVideoLoaded.value = false;
+    _videoPlayer();
   }
 
   @override
