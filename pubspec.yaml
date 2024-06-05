@@ -13,8 +13,15 @@ dependencies:
     sdk: flutter
 
   dio: ^5.4.3+1
-  flick_video_player: 0.7.0
-  video_player: ^2.8.6
+  flick_video_player: 
+    git:
+      url: https://github.com/CamiloPacheco98/flick-video-player.git
+      ref: master
+  video_player:
+    git:
+      url: https://github.com/vanlooverenkoen/flutter-packages.git
+      ref: feature/#60048-ios-picture-in-picture
+      path: packages/video_player/video_player
 
 dev_dependencies:
   flutter_test:
