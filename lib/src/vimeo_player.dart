@@ -5,6 +5,7 @@ import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
+import 'package:vimeo_video_player/vimeo_video_player.dart';
 
 import 'vimeo_player_controller.dart';
 
@@ -192,7 +193,7 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
     // ignore: avoid_print
     print("(vimeo player) play video with url: $url");
     _videoPlayerController = url != null
-        ? VimeoPlayerController.networkUrl(Uri.parse(url))
+        ? VimeoPlayerController.networkUrl(Uri.parse(url), VideoPlayerOptions(mixWithOthers: true))
         : VimeoPlayerController.file(widget.file!);
     _setVideoInitialPosition();
     _setVideoListeners();

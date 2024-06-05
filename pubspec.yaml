@@ -3,6 +3,7 @@ description: A Video Player that support videos from Vimeo platform in Flutter. 
 version: 0.0.12
 repository: https://github.com/Mindinventory/vimeo_video_player
 issue_tracker: https://github.com/Mindinventory/vimeo_video_player/issues
+publish_to: none
 
 environment:
   sdk: '>=3.2.0 <4.0.0'
@@ -22,7 +23,6 @@ dependencies:
       url: https://github.com/vanlooverenkoen/flutter-packages.git
       ref: feature/#60048-ios-picture-in-picture
       path: packages/video_player/video_player
-  video_player_platform_interface: ^6.2.2
 
 dev_dependencies:
   flutter_test:

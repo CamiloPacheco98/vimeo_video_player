@@ -2,7 +2,7 @@ import 'package:flick_video_player/flick_video_player.dart';
 import 'package:video_player/video_player.dart';
 
 class VimeoPlayerController extends VideoPlayerController {
-  VimeoPlayerController.networkUrl(super.url) : super.networkUrl();
+  VimeoPlayerController.networkUrl(super.url, VideoPlayerOptions videoPlayerOptions) : super.networkUrl(videoPlayerOptions: videoPlayerOptions);
 
   VimeoPlayerController.file(super.file) : super.file();
 
