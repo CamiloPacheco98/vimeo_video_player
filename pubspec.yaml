@@ -21,7 +21,6 @@ dependencies:
     git:
       url: https://github.com/vanlooverenkoen/flutter-packages.git
       ref: feature/#60048-ios-picture-in-picture
-      path: packages/video_player/video_player
 
 dev_dependencies:
   flutter_test:
