@@ -47,6 +47,8 @@ class VimeoVideoPlayer extends StatefulWidget {
 
   final VoidCallback? onNoSourceFound;
 
+  final bool hideControls;
+
   const VimeoVideoPlayer({
     this.url,
     this.file,
@@ -69,6 +71,7 @@ class VimeoVideoPlayer extends StatefulWidget {
     this.onNoSourceFound,
     super.key,
     this.exitFullScreenOnFinish = true,
+    this.hideControls = false,
   });
 
   @override
@@ -193,7 +196,8 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
     // ignore: avoid_print
     print("(vimeo player) play video with url: $url");
     _videoPlayerController = url != null
-        ? VimeoPlayerController.networkUrl(Uri.parse(url), VideoPlayerOptions(mixWithOthers: true))
+        ? VimeoPlayerController.networkUrl(
+            Uri.parse(url), VideoPlayerOptions(mixWithOthers: true))
         : VimeoPlayerController.file(widget.file!);
     _setVideoInitialPosition();
     _setVideoListeners();
@@ -218,23 +222,7 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
         valueListenable: isVimeoVideoLoaded,
         builder: (context, bool isVideo, child) => Container(
           child: isVideo
-              ? FlickVideoPlayer(
-                  key: ObjectKey(_flickManager),
-                  flickManager: _flickManager ??
-                      FlickManager(
-                        videoPlayerController: _emptyVideoPlayerController,
-                      ),
-                  systemUIOverlay: widget.systemUiOverlay,
-                  preferredDeviceOrientation: widget.deviceOrientation,
-                  flickVideoWithControls: const FlickVideoWithControls(
-                    videoFit: BoxFit.fitWidth,
-                    controls: FlickPortraitControls(),
-                  ),
-                  flickVideoWithControlsFullscreen:
-                      const FlickVideoWithControls(
-                    controls: FlickLandscapeControls(),
-                  ),
-                )
+              ? flickVideoPlayerView()
               : const Center(
                   child: CircularProgressIndicator(
                     color: Colors.grey,
@@ -248,6 +236,41 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
         _videoPlayerController?.pause();
       },
     );
+  }
+
+  Widget flickVideoPlayerView() {
+    return widget.hideControls
+        ? FlickVideoPlayer(
+            key: ObjectKey(_flickManager),
+            flickManager: _flickManager ??
+                FlickManager(
+                  videoPlayerController: _emptyVideoPlayerController,
+                ),
+            systemUIOverlay: widget.systemUiOverlay,
+            preferredDeviceOrientation: widget.deviceOrientation,
+            flickVideoWithControls: const FlickVideoWithControls(
+              controls: null,
+            ),
+            flickVideoWithControlsFullscreen: const FlickVideoWithControls(
+              controls: null
+            ),
+          )
+        : FlickVideoPlayer(
+            key: ObjectKey(_flickManager),
+            flickManager: _flickManager ??
+                FlickManager(
+                  videoPlayerController: _emptyVideoPlayerController,
+                ),
+            systemUIOverlay: widget.systemUiOverlay,
+            preferredDeviceOrientation: widget.deviceOrientation,
+            flickVideoWithControls: const FlickVideoWithControls(
+              videoFit: BoxFit.fitWidth,
+              controls: FlickPortraitControls(),
+            ),
+            flickVideoWithControlsFullscreen: const FlickVideoWithControls(
+              controls: FlickLandscapeControls(),
+            ),
+          );
   }
 }
 
