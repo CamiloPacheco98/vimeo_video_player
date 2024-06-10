@@ -197,8 +197,11 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
     print("(vimeo player) play video with url: $url");
     _videoPlayerController = url != null
         ? VimeoPlayerController.networkUrl(
-            Uri.parse(url), VideoPlayerOptions(mixWithOthers: true, allowBackgroundPlayback: true))
+            Uri.parse(url),
+            VideoPlayerOptions(
+                mixWithOthers: true, allowBackgroundPlayback: true))
         : VimeoPlayerController.file(widget.file!);
+    _videoPlayerController?.initialize();
     _setVideoInitialPosition();
     _setVideoListeners();
 
@@ -251,9 +254,8 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
             flickVideoWithControls: const FlickVideoWithControls(
               controls: null,
             ),
-            flickVideoWithControlsFullscreen: const FlickVideoWithControls(
-              controls: null
-            ),
+            flickVideoWithControlsFullscreen:
+                const FlickVideoWithControls(controls: null),
           )
         : FlickVideoPlayer(
             key: ObjectKey(_flickManager),
