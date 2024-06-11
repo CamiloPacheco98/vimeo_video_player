@@ -201,21 +201,22 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
             VideoPlayerOptions(
                 mixWithOthers: true, allowBackgroundPlayback: true))
         : VimeoPlayerController.file(widget.file!);
-    _videoPlayerController?.initialize();
-    _setVideoInitialPosition();
-    _setVideoListeners();
+    _videoPlayerController?.initialize().then((value) {
+      _setVideoInitialPosition();
+      _setVideoListeners();
 
-    widget.onReadyController?.call(_videoPlayerController!);
+      widget.onReadyController?.call(_videoPlayerController!);
 
-    _flickManager = FlickManager(
-      videoPlayerController:
-          _videoPlayerController ?? _emptyVideoPlayerController,
-      autoPlay: widget.autoPlay,
-      // ignore: use_build_context_synchronously
-    )..registerContext(context);
+      _flickManager = FlickManager(
+        videoPlayerController:
+            _videoPlayerController ?? _emptyVideoPlayerController,
+        autoPlay: widget.autoPlay,
+        // ignore: use_build_context_synchronously
+      )..registerContext(context);
 
-    _videoPlayerController!.setFlickManager(_flickManager!);
-    isVimeoVideoLoaded.value = !isVimeoVideoLoaded.value;
+      _videoPlayerController!.setFlickManager(_flickManager!);
+      isVimeoVideoLoaded.value = !isVimeoVideoLoaded.value;
+    });
   }
 
   @override
