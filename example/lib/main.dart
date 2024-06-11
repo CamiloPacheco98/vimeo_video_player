@@ -24,7 +24,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   /// also support url like this: 'www.vimeo.com/70591644', 'vimeo.com/70591644'
-  final String _vimeoVideoUrl = 'https://vimeo.com/70591644';
+  final String _vimeoVideoUrl = 'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4';
 
   @override
   Widget build(BuildContext context) {
