@@ -11,8 +11,6 @@ import 'package:audio_service/audio_service.dart';
 
 import 'vimeo_player_controller.dart';
 
-late AudioPlayerHandler _audioHandler;
-
 class VimeoVideoPlayer extends StatefulWidget {
   /// vimeo video url
   final String? url;
@@ -53,6 +51,8 @@ class VimeoVideoPlayer extends StatefulWidget {
 
   final bool hideControls;
 
+  final AudioPlayerHandler? audioHandler;
+
   const VimeoVideoPlayer({
     this.url,
     this.file,
@@ -76,6 +76,7 @@ class VimeoVideoPlayer extends StatefulWidget {
     super.key,
     this.exitFullScreenOnFinish = true,
     this.hideControls = false,
+    this.audioHandler,
   });
 
   @override
@@ -103,20 +104,8 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
     if (widget.url == null && widget.file == null) {
       throw "Invalid source. The url or file should not be null";
     }
-    initAudio();
-    super.initState();
-  }
-
-  initAudio() async {
-    _audioHandler = await AudioService.init(
-      builder: () => AudioPlayerHandler(),
-      config: const AudioServiceConfig(
-        androidNotificationChannelId: 'com.ryanheise.myapp.channel.audio',
-        androidNotificationChannelName: 'Audio playback',
-        androidNotificationOngoing: true,
-      ),
-    );
     _videoPlayer();
+    super.initState();
   }
 
   @override
@@ -212,22 +201,24 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
     print("(vimeo player) play video with url: $url");
     _videoPlayerController = url != null
         ? VimeoPlayerController.networkUrl(
-            Uri.parse(url),
-            VideoPlayerOptions(allowBackgroundPlayback: true))
+            Uri.parse(url), VideoPlayerOptions(allowBackgroundPlayback: true))
         : VimeoPlayerController.file(widget.file!);
     _videoPlayerController?.initialize().then((value) {
-      _audioHandler.setVideoFunctions(_videoPlayerController!.play,
-          _videoPlayerController!.pause, _videoPlayerController!.seekTo, () {
-        _videoPlayerController!.seekTo(Duration.zero);
-        _videoPlayerController!.pause();
-      });
+      final _audioHandler = widget.audioHandler;
+      if (_audioHandler != null) {
+        _audioHandler.setVideoFunctions(_videoPlayerController!.play,
+            _videoPlayerController!.pause, _videoPlayerController!.seekTo, () {
+          _videoPlayerController!.seekTo(Duration.zero);
+          _videoPlayerController!.pause();
+        });
 
-      // So that our clients (the Flutter UI and the system notification) know
-      // what state to display, here we set up our audio handler to broadcast all
-      // playback state changes as they happen via playbackState...
-      _audioHandler.initializeStreamController(_videoPlayerController);
-      _audioHandler.playbackState
-          .addStream(_audioHandler.streamController.stream);
+        // So that our clients (the Flutter UI and the system notification) know
+        // what state to display, here we set up our audio handler to broadcast all
+        // playback state changes as they happen via playbackState...
+        _audioHandler.initializeStreamController(_videoPlayerController);
+        _audioHandler.playbackState
+            .addStream(_audioHandler.streamController.stream);
+      }
       _setVideoInitialPosition();
       _setVideoListeners();
 

@@ -1,7 +1,20 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:vimeo_video_player/vimeo_video_player.dart';
 
-void main() => runApp(const MyApp());
+
+late AudioPlayerHandler _audioHandler;
+Future<void> main() async {
+   _audioHandler = await AudioService.init(
+    builder: () => AudioPlayerHandler(),
+    config: const AudioServiceConfig(
+      androidNotificationChannelId: 'com.ryanheise.myapp.channel.audio',
+      androidNotificationChannelName: 'Audio playback',
+      androidNotificationOngoing: true,
+    ),
+  );
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -34,6 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: VimeoVideoPlayer(
           url: _vimeoVideoUrl,
           autoPlay: true,
+          audioHandler: _audioHandler,
         ),
       ),
     );
