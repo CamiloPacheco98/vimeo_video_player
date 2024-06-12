@@ -140,7 +140,7 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
   @override
   void dispose() {
     /// disposing the controllers
-    widget.audioHandler?.playbackState.close();
+    widget.audioHandler?.streamController.close();
     _flickManager = null;
     _flickManager?.dispose();
     _videoPlayerController?.dispose();
