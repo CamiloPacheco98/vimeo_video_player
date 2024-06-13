@@ -21,7 +21,7 @@ dependencies:
   video_player:
     git:
       url: https://github.com/CamiloPacheco98/flutter-packages.git
-      ref: feature/#60048-ios-picture-in-picture
+      ref: c724cd36362b5feb44cc09948b26611868cfbc93
       path: packages/video_player/video_player
 
 dev_dependencies:

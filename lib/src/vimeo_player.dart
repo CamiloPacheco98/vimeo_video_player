@@ -197,7 +197,7 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
     print("(vimeo player) play video with url: $url");
     _videoPlayerController = url != null
         ? VimeoPlayerController.networkUrl(
-            Uri.parse(url), VideoPlayerOptions(mixWithOthers: true))
+            Uri.parse(url), VideoPlayerOptions(allowBackgroundPlayback: true))
         : VimeoPlayerController.file(widget.file!);
     _setVideoInitialPosition();
     _setVideoListeners();
