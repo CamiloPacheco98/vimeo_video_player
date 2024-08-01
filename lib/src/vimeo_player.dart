@@ -53,7 +53,9 @@ class VimeoVideoPlayer extends StatefulWidget {
 
   final AudioPlayerHandler? audioHandler;
 
-  const VimeoVideoPlayer({
+  final MediaItem? mediaItem;
+
+  VimeoVideoPlayer({
     this.url,
     this.file,
     this.systemUiOverlay = const [
@@ -77,7 +79,10 @@ class VimeoVideoPlayer extends StatefulWidget {
     this.exitFullScreenOnFinish = true,
     this.hideControls = false,
     this.audioHandler,
-  });
+    this.mediaItem,
+  }) {
+    audioHandler?.setCustomItem(item: mediaItem);
+  }
 
   @override
   State<VimeoVideoPlayer> createState() => _VimeoVideoPlayerState();
@@ -326,7 +331,10 @@ extension ShowAlertDialog on _VimeoVideoPlayerState {
 class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   late StreamController<PlaybackState> streamController;
 
-  static final _item = MediaItem(
+  MediaItem? customItem;
+
+
+  static final _defaultItem = MediaItem(
     id: 'https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3',
     album: "Science Friday",
     title: "A Salute To Head-Scratching Science",
@@ -341,13 +349,17 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   Function? _videoSeek;
   Function? _videoStop;
 
+  void setCustomItem({required MediaItem? item}) {
+    customItem = item;
+  }
+
   void setVideoFunctions(
       Function play, Function pause, Function seek, Function stop) {
     _videoPlay = play;
     _videoPause = pause;
     _videoSeek = seek;
     _videoStop = stop;
-    mediaItem.add(_item);
+    mediaItem.add(customItem ?? _defaultItem);
   }
 
   /// Initialise our audio handler.
