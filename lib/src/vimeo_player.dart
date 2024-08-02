@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:js_util';
 
 import 'package:dio/dio.dart';
 import 'package:flick_video_player/flick_video_player.dart';
