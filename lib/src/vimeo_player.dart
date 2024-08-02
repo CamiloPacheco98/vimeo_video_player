@@ -333,7 +333,6 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
 
   MediaItem? customItem;
 
-
   static final _defaultItem = MediaItem(
     id: 'https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3',
     album: "Science Friday",
@@ -359,6 +358,8 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     _videoPause = pause;
     _videoSeek = seek;
     _videoStop = stop;
+
+    streamController.onCancel?.call();
     mediaItem.add(customItem ?? _defaultItem);
   }
 
