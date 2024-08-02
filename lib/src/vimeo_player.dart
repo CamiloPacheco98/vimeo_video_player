@@ -359,7 +359,6 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     _videoSeek = seek;
     _videoStop = stop;
 
-    streamController.onCancel?.call();
     mediaItem.add(customItem ?? _defaultItem);
   }
 
