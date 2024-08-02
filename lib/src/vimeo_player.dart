@@ -347,7 +347,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     _videoPause = pause;
     _videoSeek = seek;
     _videoStop = stop;
-    mediaItem.add(_item);
+    // mediaItem.add(_item);
   }
 
   /// Initialise our audio handler.
