@@ -207,18 +207,18 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
     _videoPlayerController?.initialize().then((value) {
       final _audioHandler = widget.audioHandler;
       if (_audioHandler != null) {
-        _audioHandler.setVideoFunctions(_videoPlayerController!.play,
-            _videoPlayerController!.pause, _videoPlayerController!.seekTo, () {
-          _videoPlayerController!.seekTo(Duration.zero);
-          _videoPlayerController!.pause();
-        });
+        // _audioHandler.setVideoFunctions(_videoPlayerController!.play,
+        //     _videoPlayerController!.pause, _videoPlayerController!.seekTo, () {
+        //   _videoPlayerController!.seekTo(Duration.zero);
+        //   _videoPlayerController!.pause();
+        // });
 
-        // So that our clients (the Flutter UI and the system notification) know
-        // what state to display, here we set up our audio handler to broadcast all
-        // playback state changes as they happen via playbackState...
-        _audioHandler.initializeStreamController(_videoPlayerController);
-        _audioHandler.playbackState
-            .addStream(_audioHandler.streamController.stream);
+        // // So that our clients (the Flutter UI and the system notification) know
+        // // what state to display, here we set up our audio handler to broadcast all
+        // // playback state changes as they happen via playbackState...
+        // _audioHandler.initializeStreamController(_videoPlayerController);
+        // _audioHandler.playbackState
+        //     .addStream(_audioHandler.streamController.stream);
       }
       _setVideoInitialPosition();
       _setVideoListeners();
