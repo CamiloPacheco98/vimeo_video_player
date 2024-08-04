@@ -157,8 +157,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: b9546a39478e551c463dba1a7618f9aad159e423
-      resolved-ref: b9546a39478e551c463dba1a7618f9aad159e423
+      ref: "1dddf1236454ec0c5324c142b7734c8df4640ae9"
+      resolved-ref: "1dddf1236454ec0c5324c142b7734c8df4640ae9"
       url: "https://github.com/CamiloPacheco98/flick-video-player.git"
     source: git
     version: "0.8.0"
@@ -554,8 +554,8 @@ packages:
     dependency: "direct main"
     description:
       path: "packages/video_player/video_player"
-      ref: "feature/#60048-ios-picture-in-picture"
-      resolved-ref: "7ad36e564b06856ed56d115657bca13cfd3841b4"
+      ref: "4093b5e9ebe3da6f89a3ddf1611a1276cd912708"
+      resolved-ref: "4093b5e9ebe3da6f89a3ddf1611a1276cd912708"
       url: "https://github.com/CamiloPacheco98/flutter-packages.git"
     source: git
     version: "2.9.0"

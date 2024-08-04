@@ -19,11 +19,11 @@ dependencies:
   flick_video_player: 
     git:
       url: https://github.com/CamiloPacheco98/flick-video-player.git
-      ref: b9546a39478e551c463dba1a7618f9aad159e423
+      ref: 1dddf1236454ec0c5324c142b7734c8df4640ae9
   video_player:
     git:
       url: https://github.com/CamiloPacheco98/flutter-packages.git
-      ref: feature/#60048-ios-picture-in-picture
+      ref: 4093b5e9ebe3da6f89a3ddf1611a1276cd912708
       path: packages/video_player/video_player
 
 dev_dependencies:
