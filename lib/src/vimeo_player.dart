@@ -216,6 +216,7 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
             _videoPlayerController!.pause, _videoPlayerController!.seekTo, () {
           _videoPlayerController!.seekTo(Duration.zero);
           _videoPlayerController!.pause();
+          _audioHandler.stop();
         });
 
         // So that our clients (the Flutter UI and the system notification) know
@@ -332,7 +333,6 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   late StreamController<PlaybackState> streamController;
 
   MediaItem? customItem;
-
 
   static final _defaultItem = MediaItem(
     id: 'https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3',
