@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:video_player/video_player.dart';
 import 'package:vimeo_video_player/vimeo_video_player.dart';
 import 'package:audio_service/audio_service.dart';
@@ -147,10 +146,6 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
   void dispose() {
     /// disposing the controllers
     widget.audioHandler?.streamController.close();
-
-    /// Stop the audio handler to remove the notification
-    widget.audioHandler?.stop();
-
     _flickManager = null;
     _flickManager?.dispose();
     _videoPlayerController?.dispose();
@@ -218,7 +213,11 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
       final _audioHandler = widget.audioHandler;
       if (_audioHandler != null) {
         _audioHandler.setVideoFunctions(_videoPlayerController!.play,
-            _videoPlayerController!.pause, _videoPlayerController!.seekTo);
+            _videoPlayerController!.pause, _videoPlayerController!.seekTo, () {
+          _videoPlayerController!.seekTo(Duration.zero);
+          _videoPlayerController!.pause();
+          _audioHandler.stop();
+        });
 
         // So that our clients (the Flutter UI and the system notification) know
         // what state to display, here we set up our audio handler to broadcast all
@@ -345,24 +344,21 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
         'https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg'),
   );
 
-  Function? _videoPlay;
-  Function? _videoPause;
-  Function? _videoSeek;
-
-  final _player = AudioPlayer();
-
-  @override
-  Future<void> stop() => _player.stop();
+  // Function? _videoPlay;
+  // Function? _videoPause;
+  // Function? _videoSeek;
+  // Function? _videoStop;
 
   void setCustomItem({required MediaItem? item}) {
     customItem = item;
   }
 
   void setVideoFunctions(
-      Function play, Function pause, Function seek) {
-    _videoPlay = play;
-    _videoPause = pause;
-    _videoSeek = seek;
+      Function play, Function pause, Function seek, Function stop) {
+    // _videoPlay = play;
+    // _videoPause = pause;
+    // _videoSeek = seek;
+    // _videoStop = stop;
     mediaItem.add(customItem ?? _defaultItem);
   }
 
@@ -374,14 +370,17 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   // headset will be routed through to these 4 methods so that you can handle
   // your audio playback logic in one place.
 
-  @override
-  Future<void> play() async => _videoPlay!();
+  // @override
+  // Future<void> play() async => _videoPlay!();
 
-  @override
-  Future<void> pause() async => _videoPause!();
+  // @override
+  // Future<void> pause() async => _videoPause!();
 
-  @override
-  Future<void> seek(Duration position) async => _videoSeek!(position);
+  // @override
+  // Future<void> seek(Duration position) async => _videoSeek!(position);
+
+  // @override
+  // Future<void> stop() async => _videoStop!();
 
   void initializeStreamController(
       VideoPlayerController? videoPlayerController) {
@@ -409,11 +408,15 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     void _addVideoEvent() {
       streamController.add(PlaybackState(
         controls: [
-          if (_isPlaying()) MediaControl.pause else MediaControl.play,
+          // MediaControl.rewind,
+          // if (_isPlaying()) MediaControl.pause else MediaControl.play,
+          // MediaControl.stop,
+          // MediaControl.fastForward,
         ],
         systemActions: const {
-          MediaAction.seekForward,
-          MediaAction.seekBackward,
+          // MediaAction.seek,
+          // MediaAction.seekForward,
+          // MediaAction.seekBackward,
         },
         androidCompactActionIndices: const [0, 1, 3],
         processingState: _processingState(),
@@ -434,9 +437,10 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     }
 
     streamController = StreamController<PlaybackState>(
-        onListen: startStream,
-        onPause: stopStream,
-        onResume: startStream,
-        onCancel: stopStream);
+      // onListen: startStream,
+      // onPause: stopStream,
+      // onResume: startStream,
+      // onCancel: stopStream,
+    );
   }
 }
