@@ -344,10 +344,10 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
         'https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg'),
   );
 
-  // Function? _videoPlay;
-  // Function? _videoPause;
-  // Function? _videoSeek;
-  // Function? _videoStop;
+  Function? _videoPlay;
+  Function? _videoPause;
+  Function? _videoSeek;
+  Function? _videoStop;
 
   void setCustomItem({required MediaItem? item}) {
     customItem = item;
@@ -355,10 +355,10 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
 
   void setVideoFunctions(
       Function play, Function pause, Function seek, Function stop) {
-    // _videoPlay = play;
-    // _videoPause = pause;
-    // _videoSeek = seek;
-    // _videoStop = stop;
+    _videoPlay = play;
+    _videoPause = pause;
+    _videoSeek = seek;
+    _videoStop = stop;
     mediaItem.add(customItem ?? _defaultItem);
   }
 
@@ -370,17 +370,17 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   // headset will be routed through to these 4 methods so that you can handle
   // your audio playback logic in one place.
 
-  // @override
-  // Future<void> play() async => _videoPlay!();
+  @override
+  Future<void> play() async => _videoPlay!();
 
-  // @override
-  // Future<void> pause() async => _videoPause!();
+  @override
+  Future<void> pause() async => _videoPause!();
 
-  // @override
-  // Future<void> seek(Duration position) async => _videoSeek!(position);
+  @override
+  Future<void> seek(Duration position) async => _videoSeek!(position);
 
-  // @override
-  // Future<void> stop() async => _videoStop!();
+  @override
+  Future<void> stop() async => _videoStop!();
 
   void initializeStreamController(
       VideoPlayerController? videoPlayerController) {
@@ -408,15 +408,17 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     void _addVideoEvent() {
       streamController.add(PlaybackState(
         controls: [
-          // MediaControl.rewind,
-          // if (_isPlaying()) MediaControl.pause else MediaControl.play,
-          // MediaControl.stop,
-          // MediaControl.fastForward,
+          MediaControl.rewind,
+          if (_isPlaying()) MediaControl.pause else MediaControl.play,
+          MediaControl.stop,
+          MediaControl.fastForward,
         ],
         systemActions: const {
-          // MediaAction.seek,
-          // MediaAction.seekForward,
-          // MediaAction.seekBackward,
+          MediaAction.seek,
+          MediaAction.seekForward,
+          MediaAction.seekBackward,
+          MediaAction.fastForward,
+          MediaAction.stop,
         },
         androidCompactActionIndices: const [0, 1, 3],
         processingState: _processingState(),
@@ -437,10 +439,9 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     }
 
     streamController = StreamController<PlaybackState>(
-      // onListen: startStream,
-      // onPause: stopStream,
-      // onResume: startStream,
-      // onCancel: stopStream,
-    );
+        onListen: startStream,
+        onPause: stopStream,
+        onResume: startStream,
+        onCancel: stopStream);
   }
 }
