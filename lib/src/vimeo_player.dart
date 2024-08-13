@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:video_player/video_player.dart';
 import 'package:vimeo_video_player/vimeo_video_player.dart';
 import 'package:audio_service/audio_service.dart';
@@ -217,11 +218,7 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
       final _audioHandler = widget.audioHandler;
       if (_audioHandler != null) {
         _audioHandler.setVideoFunctions(_videoPlayerController!.play,
-            _videoPlayerController!.pause, _videoPlayerController!.seekTo, () {
-          _videoPlayerController!.seekTo(Duration.zero);
-          _videoPlayerController!.pause();
-          _audioHandler.stop();
-        });
+            _videoPlayerController!.pause, _videoPlayerController!.seekTo);
 
         // So that our clients (the Flutter UI and the system notification) know
         // what state to display, here we set up our audio handler to broadcast all
@@ -351,18 +348,21 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   Function? _videoPlay;
   Function? _videoPause;
   Function? _videoSeek;
-  Function? _videoStop;
+
+  final _player = AudioPlayer();
+
+  @override
+  Future<void> stop() => _player.stop();
 
   void setCustomItem({required MediaItem? item}) {
     customItem = item;
   }
 
   void setVideoFunctions(
-      Function play, Function pause, Function seek, Function stop) {
+      Function play, Function pause, Function seek) {
     _videoPlay = play;
     _videoPause = pause;
     _videoSeek = seek;
-    _videoStop = stop;
     mediaItem.add(customItem ?? _defaultItem);
   }
 
@@ -382,9 +382,6 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
 
   @override
   Future<void> seek(Duration position) async => _videoSeek!(position);
-
-  @override
-  Future<void> stop() async => _videoStop!();
 
   void initializeStreamController(
       VideoPlayerController? videoPlayerController) {
@@ -412,13 +409,9 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     void _addVideoEvent() {
       streamController.add(PlaybackState(
         controls: [
-          MediaControl.rewind,
           if (_isPlaying()) MediaControl.pause else MediaControl.play,
-          MediaControl.stop,
-          MediaControl.fastForward,
         ],
         systemActions: const {
-          MediaAction.seek,
           MediaAction.seekForward,
           MediaAction.seekBackward,
         },
