@@ -146,6 +146,10 @@ class _VimeoVideoPlayerState extends State<VimeoVideoPlayer> {
   void dispose() {
     /// disposing the controllers
     widget.audioHandler?.streamController.close();
+
+    /// Stop the audio handler to remove the notification
+    widget.audioHandler?.stop();
+
     _flickManager = null;
     _flickManager?.dispose();
     _videoPlayerController?.dispose();
