@@ -19,11 +19,11 @@ dependencies:
   flick_video_player: 
     git:
       url: https://github.com/CamiloPacheco98/flick-video-player.git
-      ref: 1dddf1236454ec0c5324c142b7734c8df4640ae9
+      ref: bf77b2d6c369c178911e0d5a0b9b3ab8d318bac5
   video_player:
     git:
       url: https://github.com/CamiloPacheco98/flutter-packages.git
-      ref: 4093b5e9ebe3da6f89a3ddf1611a1276cd912708
+      ref: c3d93d23bc92cf1cdc3f8d224821129838214715
       path: packages/video_player/video_player
 
 dev_dependencies:
